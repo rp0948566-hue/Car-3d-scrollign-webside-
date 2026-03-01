@@ -72,49 +72,41 @@ body {
     letter-spacing: 0.2em;
     font-weight: 700;
     color: #D4AF37;
-    text-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
-}
-
-.hero-stats {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    opacity: 0;
+    text-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
+    -webkit-font-smoothing: antialiased;
 }
 
 .hero-stats p {
-    font-size: 1.2rem;
-    letter-spacing: 0.5em;
+    font-size: 1.1rem;
+    letter-spacing: 0.6em;
     text-transform: uppercase;
     color: #FFFFFF;
+    font-weight: 300;
 }
 
 #side-tag {
-    top: 5vh;
-    left: auto;
+    top: 6vh;
     right: 5vw;
-    transform: none;
     text-align: right;
+    font-size: 0.9rem;
+    opacity: 0.8;
 }
 
 #speedometer-container {
     position: absolute;
-    bottom: 5vh;
+    bottom: 6vh;
     right: 5vw;
     text-align: right;
-    width: 200px;
-    opacity: 0;
+    width: 250px;
 }
 
 .speed-value {
-    font-size: 4rem;
-    font-weight: 800;
+    font-size: 5rem;
+    font-weight: 900;
     line-height: 1;
     color: #D4AF37;
+    text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
     font-family: 'Inter', sans-serif;
-    letter-spacing: -2px;
 }
 
 .speed-label {
