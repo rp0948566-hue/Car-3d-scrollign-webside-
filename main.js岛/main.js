@@ -65,7 +65,7 @@ const floorGeo = new THREE.PlaneGeometry(300, 300);
 const floorMat = new THREE.MeshStandardMaterial({
     color: 0x050505,
     metalness: 1.0,
-    roughness: 0.1,
+    roughness: 0.08,
     envMapIntensity: 2.5
 });
 const floor = new THREE.Mesh(floorGeo, floorMat);
@@ -73,22 +73,22 @@ floor.rotation.x = -Math.PI / 2;
 floor.receiveShadow = true;
 scene.add(floor);
 
-// DRIFT SMOKE PARTICLE SYSTEM (Simple but Effective)
+// DRIFT SMOKE PARTICLE SYSTEM
 const smokeGeometry = new THREE.BufferGeometry();
-const smokeCount = 300;
+const smokeCount = 200;
 const smokePositions = new Float32Array(smokeCount * 3);
 for (let i = 0; i < smokeCount; i++) {
-    smokePositions[i * 3] = (Math.random() - 0.5) * 5;
+    smokePositions[i * 3] = (Math.random() - 0.5) * 2;
     smokePositions[i * 3 + 1] = Math.random() * 0.5;
     smokePositions[i * 3 + 2] = (Math.random() - 0.5) * 5;
 }
 smokeGeometry.setAttribute('position', new THREE.BufferAttribute(smokePositions, 3));
 const smokeMaterial = new THREE.PointsMaterial({
-    color: 0x666666,
-    size: 0.08,
+    color: 0xAAAAAA,
+    size: 0.1,
     transparent: true,
     opacity: 0,
-    blending: THREE.NormalBlending
+    blending: THREE.AdditiveBlending
 });
 const driftSmoke = new THREE.Points(smokeGeometry, smokeMaterial);
 scene.add(driftSmoke);
@@ -171,9 +171,12 @@ function initScroll() {
                 document.querySelector('.speed-value').innerText = currentSpeed;
                 document.getElementById('speed-progress').style.width = `${self.progress * 100}%`;
 
-                // TIRE SMOKE POSITION SYNC
-                if (car) {
-                    driftSmoke.position.set(car.position.x, car.position.y, car.position.z - 2.5);
+                // TIRE SMOKE SYNC during drift phase (Z between 5 and 15)
+                if (car.position.z > 2 && car.position.z < 15) {
+                    driftSmoke.material.opacity = Math.sin(self.progress * Math.PI) * 0.3;
+                    driftSmoke.position.set(car.position.x, car.position.y, car.position.z - 2);
+                } else {
+                    driftSmoke.material.opacity = 0;
                 }
             }
         }
@@ -185,7 +188,7 @@ function initScroll() {
     // 2. ELITE CAMERA SWEEP: THE "ENGINE REVEAL"
     tl.to(camera.position, { x: 8, y: 6, z: 15, duration: 1 }, 0) // The Reveal
         .to(camera.position, { x: -6, y: 3, z: -8, duration: 1 }, 1) // The Engine Sweep
-        .to(camera.position, { x: 0, y: 1.0, z: 4.5, duration: 1 }, 2); // The Hero Stance
+        .to(camera.position, { x: 0, y: 1.0, z: 4, duration: 1 }, 2); // The Hero
 
     // 3. X-RAY ENGINE PASS: Body panel fading for clients
     bodyPanels.forEach(panel => {
@@ -193,7 +196,7 @@ function initScroll() {
         tl.to(panel.material, { opacity: 1.0, duration: 0.3 }, 1.3);
     });
 
-    // 4. MOTION PHYSICS (WHEELS & SMOKE)
+    // 4. MOTION PHYSICS
     ScrollTrigger.create({
         trigger: "#scroll-wrapper",
         start: "top top",
@@ -202,31 +205,31 @@ function initScroll() {
         onUpdate: (self) => {
             const progress = self.progress;
             wheels.forEach(w => {
-                w.rotation.x = progress * 400; // Realistic high-speed spin
+                w.rotation.x = progress * 400; // Fast rotation for effect
             });
             if (steeringWheel) steeringWheel.rotation.y = Math.sin(progress * 25) * 0.6;
         }
     });
 
-    // TIRE SMOKE REVEAL DURING DRIFT PHASE
+    // TIRE SMOKE PHYSICS
     gsap.to(smokeMaterial, {
-        opacity: 0.35,
+        opacity: 0.4,
         scrollTrigger: {
             trigger: "#scroll-wrapper",
-            start: "25% top",
-            end: "55% top",
+            start: "30% top",
+            end: "60% top",
             scrub: true
         }
     });
 
     if (bodyCtrl) {
-        // Aggressive Drift Lean as requested for Cool Clients
-        tl.to(bodyCtrl.rotation, { z: -0.5, duration: 0.3 }, 0.3); // Initial Lean (Drift Start)
-        tl.to(bodyCtrl.rotation, { z: 0.45, duration: 0.3 }, 1.4);  // Counter Lean (Cool Drift)
-        tl.to(bodyCtrl.rotation, { z: 0, duration: 0.3 }, 2.5);    // Neutral Recovery
+        // Aggressive Drift Lean as requested
+        tl.to(bodyCtrl.rotation, { z: -0.5, duration: 0.3 }, 0.3); // Initial Lean
+        tl.to(bodyCtrl.rotation, { z: 0.4, duration: 0.3 }, 1.4);  // Counter Lean
+        tl.to(bodyCtrl.rotation, { z: 0, duration: 0.3 }, 2.5);    // Neutral Exit
 
-        // Tilt back slightly during initial burst
-        tl.to(bodyCtrl.rotation, { x: -0.08, duration: 0.5 }, 0);
+        // Tilt back during acceleration
+        tl.to(bodyCtrl.rotation, { x: -0.1, duration: 0.5 }, 0);
     }
 
     // 5. LUXURY UI REVEALS (PERMANENT SPEEDO)
@@ -245,10 +248,10 @@ function initScroll() {
         }
     });
 
-    // 6. SHOWCASE ROTATION (ULTIMATE QUALITY)
+    // 6. SHOWCASE ROTATION
     gsap.to(car.rotation, {
         y: Math.PI * 2,
-        duration: 30, // Extremely slow, high-end gallery rotation
+        duration: 25,
         repeat: -1,
         ease: "none",
         scrollTrigger: {
@@ -263,10 +266,10 @@ function animate() {
     requestAnimationFrame(animate);
 
     if (car) {
-        // High-Class Micro-Physics: The "Engine Roar"
+        // High-Class Micro-Vibration: The "Engine Roar"
         const time = performance.now() * 0.001;
-        car.position.y += Math.sin(time * 4.5) * 0.0006; // Roaring Suspension Jitter
-        car.rotation.z += Math.cos(time * 2.5) * 0.0002;
+        car.position.y += Math.sin(time * 4) * 0.0006; // Roaring Vibration
+        car.rotation.z += Math.cos(time * 2) * 0.0002;
 
         camera.lookAt(car.position.x, car.position.y + 0.45, car.position.z);
     }
