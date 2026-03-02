@@ -192,11 +192,15 @@ window.addEventListener('mousemove', (e) => {
 
 function animate() {
     requestAnimationFrame(animate);
+    const time = performance.now() * 0.001;
     if (car) {
         // High-End Parallax Response
         car.rotation.z = THREE.MathUtils.lerp(car.rotation.z, mouseX * 2.5, 0.1);
         car.rotation.x = THREE.MathUtils.lerp(car.rotation.x, mouseY * 2.5, 0.1);
         car.rotation.y = THREE.MathUtils.lerp(car.rotation.y, targetRotY, 0.1);
+
+        // "Coming out of Screen" Depth Pulse
+        car.position.y = 1.0 + Math.sin(time * 3) * 0.15;
 
         camera.lookAt(0, 0, car.position.z);
     }
