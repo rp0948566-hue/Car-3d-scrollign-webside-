@@ -180,8 +180,8 @@ function initMasterScroll() {
     });
 
     // Vertical Movement Sync
-    tl.to(car.position, { z: 4, duration: 10, ease: "power2.inOut" }, 0); // Slight drift down for depth
-    tl.to(camera.position, { y: 20, z: 8, duration: 10 }, 0); // Adjust perspective as it scrolls
+    tl.to(car.position, { z: 6, duration: 10, ease: "power2.inOut" }, 0); // Pronounced drift for bird's-eye depth
+    tl.to(camera.position, { y: 22, z: 12, duration: 10 }, 0); // Locked Bird's Eye Look
 }
 
 let mouseX = 0, mouseY = 0;
