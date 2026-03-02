@@ -4,53 +4,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bugatti Tourbillon | Luxury Experience</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&display=swap"
-        rel="stylesheet">
+    <title>Bugatti | Onyx Elite by CodeWithRudra</title>
     <link rel="stylesheet" href="style.css">
+    <meta name="description" content="Bugatti Tourbillen - A High-Octane 3D Scrollytelling Experience.">
 </head>
 
 <body>
     <div id="loader">
-        <div class="loader-content">
-            <h1>BUGATTI</h1>
-            <p>LOADING PERFECTION...</p>
+        <div class="loader-inner">
+            <h1 style="font-size: 0.8rem; letter-spacing: 0.8em; opacity: 0.5;">INITIALIZING</h1>
+            <div class="loader-line">
+                <div class="loader-bar"></div>
+            </div>
+            <h1 style="font-size: 0.8rem; letter-spacing: 0.5em;">BUGATTI BY RUDRA</h1>
         </div>
     </div>
 
     <div id="canvas-container"></div>
 
     <div id="ui-layer">
-        <div id="brand-top" class="hero-text">
-            <h1>BUGATTI</h1>
+        <div class="hud-box top-left">
+            <p class="label">COLLECTION</p>
+            <p class="value">ONYX ELITE .24</p>
         </div>
 
-        <div id="stats-center" class="hero-stats">
-            <p>1,600 HP | 300 KM/H</p>
+        <div class="hud-box top-right">
+            <p class="label">SYSTEM STATUS</p>
+            <p class="value" style="color: #ffffff; opacity: 0.9;">OPTIMIZED</p>
         </div>
 
-        <div id="brand-bottom" class="hero-text">
-            <h1>TOURBILLON</h1>
-        </div>
+        <div class="hud-box bottom-left">
+            <p class="label">ENGINEERING</p>
+            <p class="value">V16 QUINTESSENCE</p>
+            <p class="label" style="font-size: 0.45rem; margin-top: 10px; opacity: 0.3;">CODEWITHRUDRA INDUSTRIES /
+                BESPOKE RIG</p>
 
-        <div id="side-tag" class="hero-stats">
-            <p>PRECISION ENGINEERING</p>
-        </div>
-
-        <div id="speedometer-container">
-            <div class="speed-value">0</div>
-            <div class="speed-label">KM/H</div>
-            <div class="speed-bar">
-                <div id="speed-progress"></div>
+            <!-- G-FORCE HUB -->
+            <div class="g-meter-wrap">
+                <p class="label">LATERAL LOGS</p>
+                <div class="g-canvas-wrap">
+                    <div id="g-dot"></div>
+                </div>
             </div>
+        </div>
+
+        <div class="hud-box bottom-right">
+            <p class="label">VELOCITY TRACKER</p>
+            <div class="speed-wrap">
+                <span id="speed-val" class="speed-val">0</span>
+                <span class="speed-unit">KM / H</span>
+            </div>
+            <div class="progress-track" style="margin-left: auto;">
+                <div id="progress-fill" class="progress-fill"></div>
+            </div>
+            <!-- AERO BADGE -->
+            <div id="aero-badge" class="aero-badge" style="border-color: rgba(255,255,255,0.1); color: #fff;">AERO:
+                PASSIVE</div>
         </div>
     </div>
 
     <div id="scroll-wrapper">
-        <!-- 50 sections for smooth scrollytelling -->
+        <section class="section">
+            <h1>BUGATTI</h1>
+        </section>
+        <section class="section">
+            <h1>TOURBILLON</h1>
+        </section>
+        <section class="section">
+            <h1>PRECISION</h1>
+        </section>
+        <section class="section">
+            <h1>POWER</h1>
+        </section>
+        <section class="section">
+            <h1>SPEED</h1>
+        </section>
+        <section class="section">
+            <h1>AERO</h1>
+        </section>
+        <section class="section">
+            <h1>DYNAMICS</h1>
+        </section>
+        <section class="section">
+            <h1>HYBRID</h1>
+        </section>
+        <section class="section">
+            <h1>PERFECTION</h1>
+        </section>
+        <section class="section">
+            <h1>RUDRA</h1>
+        </section>
+
+        <!-- Additional 40 Buffer Sections for Scroll Smoothing -->
         <div class="section"></div>
         <div class="section"></div>
         <div class="section"></div>
@@ -91,16 +136,16 @@
         <div class="section"></div>
         <div class="section"></div>
         <div class="section"></div>
-        <div class="section"></div>
-        <div class="section"></div>
-        <div class="section"></div>
-        <div class="section"></div>
-        <div class="section"></div>
-        <div class="section"></div>
-        <div class="section"></div>
-        <div class="section"></div>
-        <div class="section"></div>
-        <div class="section"></div>
+
+        <!-- FINAL DEPLOY READY SECTION -->
+        <section class="section final-section">
+            <div id="cta-box" class="cta-box">
+                <p class="label">ULTIMATE EXPERIENCE</p>
+                <h2>BUGATTI ELITE</h2>
+                <button class="cta-button">EXPLORE MORE</button>
+                <p style="margin-top: 20px; font-size: 0.6rem; opacity: 0.3;">© 2024 CODEWITHRUDRA INDUSTRIES</p>
+            </div>
+        </section>
     </div>
 
     <script type="module" src="main.js"></script>

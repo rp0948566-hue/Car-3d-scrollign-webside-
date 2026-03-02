@@ -1,276 +1,201 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
-import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
+import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
+import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
-// --- ELITE SCENE CONFIG (S-CLASS PERFECTION V2 - THE "COOL" PASS) ---
+// --- MASTER REALITY ENGINE (V. VERTICAL WALL MODE) ---
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x020202);
-scene.fog = new THREE.Fog(0x020202, 10, 60);
+scene.background = new THREE.Color(0x000000); // Pure Black Abyss
+scene.fog = new THREE.FogExp2(0x000000, 0.01);
 
-const camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.set(0, 4, 15);
+// Top-Down Z-Axis Perspective
+const camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 1.0, 10000);
+camera.position.set(0, 25, 5); // Position for a high-end top-down cinematic look
 
 const renderer = new THREE.WebGLRenderer({
     antialias: true,
     alpha: true,
-    powerPreference: "high-performance",
-    stencil: false,
-    depth: true
+    powerPreference: "high-performance"
 });
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.35;
+renderer.toneMappingExposure = 1.2;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.VSMShadowMap;
 
 document.getElementById('canvas-container').appendChild(renderer.domElement);
 
-// --- CINEMATIC POST-PROCESSING ---
+// --- CINEMATIC POST PROCESSING ---
 const composer = new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene, camera));
-const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.6, 0.3, 0.85);
+const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.2, 0.4, 0.95);
 composer.addPass(bloomPass);
 
-// --- PRO STUDIO LIGHTING RIG ---
-// Bank Light (Large Soft Box Effect)
-const areaLight = new THREE.DirectionalLight(0xffffff, 5.0);
-areaLight.position.set(5, 10, 5);
-areaLight.castShadow = true;
-areaLight.shadow.mapSize.set(2048, 2048);
-scene.add(areaLight);
+// --- 4K ELITE RACING ASSETS ---
+const textureLoader = new THREE.TextureLoader();
+const asphaltTex = textureLoader.load('elite_racing_asphalt_4k_texture_1772437915326.png');
+asphaltTex.wrapS = asphaltTex.wrapT = THREE.RepeatWrapping;
+asphaltTex.repeat.set(100, 400); // Vertical stretch for the "Wall" feel
+asphaltTex.anisotropy = 16;
 
-// Gold Highlight Rim (LUXURY)
-const goldRim = new THREE.DirectionalLight(0xD4AF37, 3.5);
-goldRim.position.set(-8, 4, -5);
-scene.add(goldRim);
-
-const ambient = new THREE.AmbientLight(0xffffff, 0.2);
-scene.add(ambient);
-
-const pmremGenerator = new THREE.PMREMGenerator(renderer);
-scene.environment = pmremGenerator.fromScene(new RoomEnvironment()).texture;
-
-// --- "SURFACE" REALISM: BRUSHED STUDIO FLOOR ---
-const floorGeo = new THREE.PlaneGeometry(300, 300);
-const floorMat = new THREE.MeshStandardMaterial({
-    color: 0x050505,
-    metalness: 1.0,
-    roughness: 0.1,
-    envMapIntensity: 2.5
+const floorGeo = new THREE.PlaneGeometry(1000, 50000);
+const floorMat = new THREE.MeshPhysicalMaterial({
+    map: asphaltTex,
+    metalness: 0.2,
+    roughness: 0.8,
+    envMapIntensity: 0.5,
+    clearcoat: 0.3
 });
 const floor = new THREE.Mesh(floorGeo, floorMat);
 floor.rotation.x = -Math.PI / 2;
-floor.receiveShadow = true;
 scene.add(floor);
 
-// DRIFT SMOKE PARTICLE SYSTEM (Simple but Effective)
-const smokeGeometry = new THREE.BufferGeometry();
-const smokeCount = 300;
-const smokePositions = new Float32Array(smokeCount * 3);
-for (let i = 0; i < smokeCount; i++) {
-    smokePositions[i * 3] = (Math.random() - 0.5) * 5;
-    smokePositions[i * 3 + 1] = Math.random() * 0.5;
-    smokePositions[i * 3 + 2] = (Math.random() - 0.5) * 5;
-}
-smokeGeometry.setAttribute('position', new THREE.BufferAttribute(smokePositions, 3));
-const smokeMaterial = new THREE.PointsMaterial({
-    color: 0x666666,
-    size: 0.08,
-    transparent: true,
-    opacity: 0,
-    blending: THREE.NormalBlending
+// --- LOAD ENVIRONMENT FOR REFLECTIONS ONLY ---
+const rgbeLoader = new RGBELoader();
+let trackEnv;
+rgbeLoader.load('https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/zwartkops_start_afternoon_1k.hdr', (texture) => {
+    texture.mapping = THREE.EquirectangularReflectionMapping;
+    trackEnv = texture;
+    scene.environment = trackEnv; // Apply for reflections, but background remains black
 });
-const driftSmoke = new THREE.Points(smokeGeometry, smokeMaterial);
-scene.add(driftSmoke);
 
-// --- MODEL & ANIMATION ENGINE ---
-let car, wheels = [], bodyCtrl, steeringWheel, bodyPanels = [];
-let mixer, carAnimations = [];
+// --- BESPOKE AUTOMOTIVE LIGHTING ---
+const topLight = new THREE.DirectionalLight(0xffffff, 2.0);
+topLight.position.set(0, 30, 0); // Lighting from above for the top-down view
+scene.add(topLight);
 
-const loader = new GLTFLoader();
+const rimLight = new THREE.SpotLight(0xBF00FF, 12.0, 100, 0.5);
+rimLight.position.set(-10, 15, 0);
+scene.add(rimLight);
+
+const rimLight2 = new THREE.SpotLight(0x00ffff, 4.0, 100, 0.5);
+rimLight2.position.set(10, 15, 0);
+scene.add(rimLight2);
+
+// --- MASTER MODEL ENGINE ---
+let car, wheels = [], bodyCtrl;
+const gltfLoader = new GLTFLoader();
 const modelPath = './uploads_files_5859585_Bugatti+Tourbillon+2024+-+Fully+Rigged+Ready+for+Animation.glb';
 
-loader.load(modelPath, (gltf) => {
+gltfLoader.load(modelPath, (gltf) => {
     car = gltf.scene;
-
-    // Auto-Ground logic (THE "SURFACE" FEEL)
-    const box = new THREE.Box3().setFromObject(car);
-    car.position.y = -box.min.y;
-
-    // Animation Sync
-    mixer = new THREE.AnimationMixer(car);
-    gltf.animations.forEach(clip => {
-        const action = mixer.clipAction(clip);
-        action.play();
-        carAnimations.push(action);
-    });
-
     car.traverse((child) => {
         if (child.isMesh) {
             child.castShadow = true;
-            child.receiveShadow = true;
-            child.material = new THREE.MeshStandardMaterial({
-                color: 0x080808,
+            child.material = new THREE.MeshPhysicalMaterial({
+                color: 0x010101, // Deep Onyx
                 metalness: 1.0,
-                roughness: 0.04,
-                envMapIntensity: 4.5,
+                roughness: 0.1,
+                envMapIntensity: 2.0,
                 clearcoat: 1.0,
-                clearcoatRoughness: 0.01,
-                transparent: true,
-                opacity: 1
+                clearcoatRoughness: 0.02,
+                sheen: 0.8,
+                sheenColor: 0xBF00FF,
+                iridescence: 0.1,
+                iridescenceIOR: 1.6
             });
-            // Track Body Panels for X-Ray Engine Reveal
-            if (child.name.toLowerCase().includes('body') || child.name.toLowerCase().includes('panel') || child.name.toLowerCase().includes('hood')) {
-                bodyPanels.push(child);
-            }
         }
         if (child.name.includes('Wheel_Rotation_X')) wheels.push(child);
-        if (child.name.includes('Body_Ctrl')) bodyCtrl = child;
-        if (child.name.toLowerCase().includes('steering')) steeringWheel = child;
+        if (child.name === 'Body_Ctrl') bodyCtrl = child;
     });
 
-    car.scale.set(1.5, 1.5, 1.5);
-    car.position.set(15, car.position.y, -30); // Starting Position (Far Top-Right)
+    car.scale.set(1.8, 1.8, 1.8); // Slightly larger for the top-down view
+    car.position.set(0, 0, 0);
+    // Point the car "up" the wall (along -Z axis)
+    car.rotation.y = Math.PI;
     scene.add(car);
 
     gsap.to('#loader', {
-        opacity: 0, duration: 1, onComplete: () => {
+        opacity: 0, duration: 2, ease: "power4.inOut", onComplete: () => {
             document.getElementById('loader').style.display = 'none';
-            initScroll();
+            initMasterScroll();
         }
     });
 });
 
-function initScroll() {
-    // ELITE MASTER TIMELINE: THE DRIFT & SURFACE PASS
+function initMasterScroll() {
+    const sections = document.querySelectorAll('.section');
+    sections.forEach((section) => {
+        ScrollTrigger.create({
+            trigger: section,
+            start: "top top",
+            end: "+=100%",
+            pin: true,
+            scrub: 2.0
+        });
+    });
+
     const tl = gsap.timeline({
         scrollTrigger: {
             trigger: "#scroll-wrapper",
             start: "top top",
             end: "bottom bottom",
-            scrub: 2.2,
-            invalidateOnRefresh: true,
+            scrub: 2.5,
             onUpdate: (self) => {
-                // INTERNAL ENGINE SYNC
-                if (mixer) {
-                    const duration = mixer.getRoot().animations?.[0]?.duration || 5.0;
-                    mixer.setTime(self.progress * duration);
-                }
-                // SPEEDOMETER SYNC
                 const currentSpeed = Math.round(self.progress * 444);
-                document.querySelector('.speed-value').innerText = currentSpeed;
-                document.getElementById('speed-progress').style.width = `${self.progress * 100}%`;
+                if (document.getElementById('speed-val')) document.getElementById('speed-val').innerText = currentSpeed;
+                if (document.getElementById('progress-fill')) document.getElementById('progress-fill').style.width = `${self.progress * 100}%`;
 
-                // TIRE SMOKE POSITION SYNC
-                if (car) {
-                    driftSmoke.position.set(car.position.x, car.position.y, car.position.z - 2.5);
+                const vel = self.getVelocity();
+                wheels.forEach(w => w.rotation.x += vel * 0.001);
+                if (asphaltTex) asphaltTex.offset.y -= vel * 0.0001; // asphalt scrolls under the car
+
+                if (bodyCtrl) {
+                    // Subtle lateral tilt based on speed/scroll
+                    const targetTilt = vel * 0.0005;
+                    bodyCtrl.rotation.z = THREE.MathUtils.lerp(bodyCtrl.rotation.z, targetTilt, 0.1);
+
+                    const gDot = document.getElementById('g-dot');
+                    if (gDot) {
+                        gDot.style.transform = `translate(${targetTilt * 300}px, ${-Math.abs(vel * 0.0006)}px)`;
+                    }
+                }
+
+                const aeroBadge = document.getElementById('aero-badge');
+                if (aeroBadge) {
+                    if (Math.abs(vel) > 800) {
+                        aeroBadge.innerText = 'AERO: ACTIVE';
+                        aeroBadge.classList.add('aero-active');
+                    } else {
+                        aeroBadge.innerText = 'AERO: PASSIVE';
+                        aeroBadge.classList.remove('aero-active');
+                    }
                 }
             }
         }
     });
 
-    // 1. CINEMATIC PATH: High-Class Entrance
-    tl.to(car.position, { x: 0, z: 12, ease: "power2.inOut" }, 0);
-
-    // 2. ELITE CAMERA SWEEP: THE "ENGINE REVEAL"
-    tl.to(camera.position, { x: 8, y: 6, z: 15, duration: 1 }, 0) // The Reveal
-        .to(camera.position, { x: -6, y: 3, z: -8, duration: 1 }, 1) // The Engine Sweep
-        .to(camera.position, { x: 0, y: 1.0, z: 4.5, duration: 1 }, 2); // The Hero Stance
-
-    // 3. X-RAY ENGINE PASS: Body panel fading for clients
-    bodyPanels.forEach(panel => {
-        tl.to(panel.material, { opacity: 0.1, duration: 0.3 }, 0.8);
-        tl.to(panel.material, { opacity: 1.0, duration: 0.3 }, 1.3);
-    });
-
-    // 4. MOTION PHYSICS (WHEELS & SMOKE)
-    ScrollTrigger.create({
-        trigger: "#scroll-wrapper",
-        start: "top top",
-        end: "bottom bottom",
-        scrub: 1.5,
-        onUpdate: (self) => {
-            const progress = self.progress;
-            wheels.forEach(w => {
-                w.rotation.x = progress * 400; // Realistic high-speed spin
-            });
-            if (steeringWheel) steeringWheel.rotation.y = Math.sin(progress * 25) * 0.6;
-        }
-    });
-
-    // TIRE SMOKE REVEAL DURING DRIFT PHASE
-    gsap.to(smokeMaterial, {
-        opacity: 0.35,
-        scrollTrigger: {
-            trigger: "#scroll-wrapper",
-            start: "25% top",
-            end: "55% top",
-            scrub: true
-        }
-    });
-
-    if (bodyCtrl) {
-        // Aggressive Drift Lean as requested for Cool Clients
-        tl.to(bodyCtrl.rotation, { z: -0.5, duration: 0.3 }, 0.3); // Initial Lean (Drift Start)
-        tl.to(bodyCtrl.rotation, { z: 0.45, duration: 0.3 }, 1.4);  // Counter Lean (Cool Drift)
-        tl.to(bodyCtrl.rotation, { z: 0, duration: 0.3 }, 2.5);    // Neutral Recovery
-
-        // Tilt back slightly during initial burst
-        tl.to(bodyCtrl.rotation, { x: -0.08, duration: 0.5 }, 0);
-    }
-
-    // 5. LUXURY UI REVEALS (PERMANENT SPEEDO)
-    const uiTimeline = [
-        { id: '#side-tag', start: "2%", end: "10%" },
-        { id: '#brand-top', start: "8%", end: "20%" },
-        { id: '#stats-center', start: "25%", end: "40%" },
-        { id: '#speedometer-container', start: "5%", end: "95%" },
-        { id: '#brand-bottom', start: "45%", end: "85%" }
-    ];
-
-    uiTimeline.forEach(ui => {
-        gsap.to(ui.id, { opacity: 1, scrollTrigger: { trigger: "#scroll-wrapper", start: `${ui.start} top`, end: "10% top", scrub: true } });
-        if (ui.id !== '#speedometer-container') {
-            gsap.to(ui.id, { opacity: 0, scrollTrigger: { trigger: "#scroll-wrapper", start: `${ui.end} top`, end: "25% top", scrub: true } });
-        }
-    });
-
-    // 6. SHOWCASE ROTATION (ULTIMATE QUALITY)
-    gsap.to(car.rotation, {
-        y: Math.PI * 2,
-        duration: 30, // Extremely slow, high-end gallery rotation
-        repeat: -1,
-        ease: "none",
-        scrollTrigger: {
-            trigger: "#scroll-wrapper",
-            start: "98% top",
-            toggleActions: "play none none none"
-        }
-    });
+    // Vertical Movement Sync
+    tl.to(car.position, { z: 4, duration: 10, ease: "power2.inOut" }, 0); // Slight drift down for depth
+    tl.to(camera.position, { y: 20, z: 8, duration: 10 }, 0); // Adjust perspective as it scrolls
 }
+
+let mouseX = 0, mouseY = 0;
+window.addEventListener('mousemove', (e) => {
+    mouseX = (e.clientX - window.innerWidth / 2) * 0.0001;
+    mouseY = (e.clientY - window.innerHeight / 2) * 0.0001;
+});
 
 function animate() {
     requestAnimationFrame(animate);
-
     if (car) {
-        // High-Class Micro-Physics: The "Engine Roar"
-        const time = performance.now() * 0.001;
-        car.position.y += Math.sin(time * 4.5) * 0.0006; // Roaring Suspension Jitter
-        car.rotation.z += Math.cos(time * 2.5) * 0.0002;
+        // Subtle tilt based on mouse for premium parallax
+        car.rotation.z = THREE.MathUtils.lerp(car.rotation.z, mouseX * 2, 0.1);
+        car.rotation.x = THREE.MathUtils.lerp(car.rotation.x, mouseY * 2, 0.1);
 
-        camera.lookAt(car.position.x, car.position.y + 0.45, car.position.z);
+        // Locked top-down look
+        camera.lookAt(0, 0, car.position.z);
     }
-
     composer.render();
 }
 
