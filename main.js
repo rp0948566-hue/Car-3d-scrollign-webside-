@@ -70,20 +70,21 @@ rgbeLoader.load('https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/zwartkops_
 });
 
 // --- BESPOKE AUTOMOTIVE LIGHTING ---
-const topLight = new THREE.DirectionalLight(0xffffff, 2.0);
-topLight.position.set(0, 30, 0); // Lighting from above for the top-down view
+const topLight = new THREE.DirectionalLight(0xffffff, 2.5);
+topLight.position.set(0, 35, 10);
 scene.add(topLight);
 
-const rimLight = new THREE.SpotLight(0xBF00FF, 12.0, 100, 0.5);
-rimLight.position.set(-10, 15, 0);
-scene.add(rimLight);
+const rimAmethyst = new THREE.SpotLight(0xBF00FF, 15.0, 100, 0.5);
+rimAmethyst.position.set(-15, 20, 0);
+scene.add(rimAmethyst);
 
-const rimLight2 = new THREE.SpotLight(0x00ffff, 4.0, 100, 0.5);
-rimLight2.position.set(10, 15, 0);
-scene.add(rimLight2);
+const rimCyan = new THREE.SpotLight(0x00ffff, 5.0, 100, 0.5);
+rimCyan.position.set(15, 20, 0);
+scene.add(rimCyan);
 
 // --- MASTER MODEL ENGINE ---
 let car, wheels = [], bodyCtrl;
+let targetRotY = Math.PI; // Default Up
 const gltfLoader = new GLTFLoader();
 const modelPath = './uploads_files_5859585_Bugatti+Tourbillon+2024+-+Fully+Rigged+Ready+for+Animation.glb';
 
@@ -95,13 +96,13 @@ gltfLoader.load(modelPath, (gltf) => {
             child.material = new THREE.MeshPhysicalMaterial({
                 color: 0x010101, // Deep Onyx
                 metalness: 1.0,
-                roughness: 0.1,
-                envMapIntensity: 2.0,
+                roughness: 0.12,
+                envMapIntensity: 2.5,
                 clearcoat: 1.0,
                 clearcoatRoughness: 0.02,
-                sheen: 0.8,
+                sheen: 0.9,
                 sheenColor: 0xBF00FF,
-                iridescence: 0.1,
+                iridescence: 0.15,
                 iridescenceIOR: 1.6
             });
         }
@@ -109,10 +110,9 @@ gltfLoader.load(modelPath, (gltf) => {
         if (child.name === 'Body_Ctrl') bodyCtrl = child;
     });
 
-    car.scale.set(1.8, 1.8, 1.8); // Slightly larger for the top-down view
+    car.scale.set(1.9, 1.9, 1.9);
     car.position.set(0, 0, 0);
-    // Point the car "up" the wall (along -Z axis)
-    car.rotation.y = Math.PI;
+    car.rotation.y = targetRotY;
     scene.add(car);
 
     gsap.to('#loader', {
@@ -148,7 +148,11 @@ function initMasterScroll() {
 
                 const vel = self.getVelocity();
                 wheels.forEach(w => w.rotation.x += vel * 0.001);
-                if (asphaltTex) asphaltTex.offset.y -= vel * 0.0001; // asphalt scrolls under the car
+                if (asphaltTex) asphaltTex.offset.y -= vel * 0.00012;
+
+                // Dynamic Rotation (Flip on Scroll)
+                if (vel > 50) targetRotY = 0; // Down
+                if (vel < -50) targetRotY = Math.PI; // Up
 
                 if (bodyCtrl) {
                     // Subtle lateral tilt based on speed/scroll
@@ -189,11 +193,11 @@ window.addEventListener('mousemove', (e) => {
 function animate() {
     requestAnimationFrame(animate);
     if (car) {
-        // Subtle tilt based on mouse for premium parallax
-        car.rotation.z = THREE.MathUtils.lerp(car.rotation.z, mouseX * 2, 0.1);
-        car.rotation.x = THREE.MathUtils.lerp(car.rotation.x, mouseY * 2, 0.1);
+        // High-End Parallax Response
+        car.rotation.z = THREE.MathUtils.lerp(car.rotation.z, mouseX * 2.5, 0.1);
+        car.rotation.x = THREE.MathUtils.lerp(car.rotation.x, mouseY * 2.5, 0.1);
+        car.rotation.y = THREE.MathUtils.lerp(car.rotation.y, targetRotY, 0.1);
 
-        // Locked top-down look
         camera.lookAt(0, 0, car.position.z);
     }
     composer.render();
