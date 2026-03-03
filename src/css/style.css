@@ -19,6 +19,21 @@ body {
     font-family: var(--font-primary);
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
+    cursor: none;
+}
+
+.cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 1rem;
+    height: 1rem;
+    background: var(--color-accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s ease-out;
 }
 
 #noise-overlay {
