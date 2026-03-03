@@ -268,4 +268,40 @@ footer {
         grid-template-columns: 1fr;
         gap: 2rem;
     }
+
+    .glass-nav {
+        padding: 0 1rem;
+        height: 3.5rem;
+    }
+
+    .logo {
+        font-size: 1.2rem;
+    }
+
+    .nav-links {
+        gap: 1rem;
+    }
+
+    .nav-links li a {
+        font-size: 0.6rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-content h1 {
+        font-size: 3.5rem;
+    }
+
+    .hero-ctas {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .btn {
+        width: 100%;
+    }
+
+    .spec-value {
+        font-size: 2rem;
+    }
 }
