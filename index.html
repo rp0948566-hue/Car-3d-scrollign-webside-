@@ -4,109 +4,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bugatti | Ivory Elite Gallery</title>
-    <!-- Professional Asset Linking -->
+    <title>REDEFINED | Car 3D Experience</title>
+    <meta name="description" content="A premium 3D car showcase experience built with Three.js and GSAP.">
     <link rel="stylesheet" href="/src/css/style.css">
-    <meta name="description" content="Bugatti Ivory Elite - A Curated 5-Chapter 3D Gallery Experience.">
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300;1,600&family=Inter:wght@100;400;700&display=swap"
-        rel="stylesheet">
 </head>
 
-<body class="ivory-mode">
-    <!-- MASTER LOADER (Professional Ivory) -->
-    <div id="loader">
-        <div class="loader-inner">
-            <p class="loader-meta">EST. 2024</p>
-            <div class="loader-line">
-                <div class="loader-bar"></div>
-            </div>
-            <h1>BUGATTI IVORY</h1>
-            <p class="loader-meta" style="margin-top: 20px; letter-spacing: 0.1em;">DIGITAL ATELIER</p>
-        </div>
+<body>
+    <div id="app">
+        <!-- Canvas for Three.js -->
+        <canvas id="webgl"></canvas>
+
+        <!-- UI Overlay -->
+        <main id="content">
+            <section id="hero">
+                <!-- Content will follow in subsequent commits -->
+            </section>
+        </main>
     </div>
 
-    <!-- CANVAS LAYER (Reserved for Future 3D) -->
-    <div id="canvas-container"></div>
-
-    <!-- UI LAYER (Professional Floating HUD) -->
-    <div id="ui-layer">
-        <div class="hud-box top-left">
-            <p class="label">EDITION</p>
-            <p class="value">IVORY GALLERY .01</p>
-        </div>
-
-        <div class="hud-box top-right">
-            <p class="label">STATUS</p>
-            <p class="value clinical">OPTIMIZED</p>
-        </div>
-
-        <div class="hud-box bottom-left">
-            <p class="label">ENGINEERING</p>
-            <p class="value">V16 QUINTESSENCE</p>
-            <p class="watermark">CODEWITHRUDRA / BESPOKE RIG</p>
-        </div>
-
-        <div class="hud-box bottom-right">
-            <p class="label">PROGRESS</p>
-            <div class="progress-track">
-                <div id="progress-fill" class="progress-fill"></div>
-            </div>
-            <p class="label" style="margin-top: 10px; font-weight: 300;">GALLERY MASTER</p>
-        </div>
-    </div>
-
-    <!-- MASTER SCROLL ENGINE (5 Pinned Chapters) -->
-    <div id="scroll-wrapper">
-        <section class="section" id="chapter-01">
-            <div class="section-content">
-                <span class="chapter-num">01</span>
-                <h2>PRECISION</h2>
-                <p>Curated Engineering in the Ivory Void.</p>
-            </div>
-        </section>
-
-        <section class="section" id="chapter-02">
-            <div class="section-content">
-                <span class="chapter-num">02</span>
-                <h2>VELOCITY</h2>
-                <p>Flipping the Perspective of Speed.</p>
-            </div>
-        </section>
-
-        <section class="section" id="chapter-03">
-            <div class="section-content">
-                <span class="chapter-num">03</span>
-                <h2>AERODYNAMICS</h2>
-                <p>Sculpted by the Invisible Wall of Air.</p>
-            </div>
-        </section>
-
-        <section class="section" id="chapter-04">
-            <div class="section-content">
-                <span class="chapter-num">04</span>
-                <h2>QUINTESSENCE</h2>
-                <p>The Fifth Chapter of Bespoke Luxury.</p>
-            </div>
-        </section>
-
-        <section class="section" id="chapter-05">
-            <div class="section-content">
-                <span class="chapter-num">05</span>
-                <h2>SIGNATURE</h2>
-                <p>The Final Seal of Elite Perfection.</p>
-                <div class="cta-wrap">
-                    <button class="cta-button">EXPLORE MORE</button>
-                    <p class="legal">© 2024 CODEWITHRUDRA INDUSTRIES</p>
-                </div>
-            </div>
-        </section>
-    </div>
-
-    <!-- Script Injection (Professional entrypoint) -->
     <script type="module" src="/src/js/main.js"></script>
 </body>
 
