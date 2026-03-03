@@ -1,337 +1,45 @@
-/* --- DESIGN TOKENS (V. IVORY MASTER) --- */
 :root {
-    --primary: #111111;
-    /* Strong Charcoal */
-    --accent: #555555;
-    /* Subtle Slate */
-    --bg-ivory: #FFFFFF;
-    /* High-Key Gallery White */
-    --text-dim: rgba(0, 0, 0, 0.4);
-    --border-clinical: rgba(0, 0, 0, 0.05);
-    --glass-white: rgba(255, 255, 255, 0.7);
-    --section-height: 100vh;
+    --color-bg: #0a0a0a;
+    --color-text: #f0f0f0;
+    --color-accent: #ffffff;
+    --color-glass: rgba(255, 255, 255, 0.05);
+    --font-primary: 'Inter', sans-serif;
+    --font-display: 'Cormorant Garamond', serif;
 }
 
-/* --- BASE STYLES --- */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    -webkit-font-smoothing: antialiased;
 }
 
 body {
-    background: var(--bg-ivory);
-    color: var(--primary);
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-primary);
     overflow-x: hidden;
-    font-family: 'Inter', sans-serif;
-    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
 }
 
-/* --- LOADER (GALLERY INITIALIZATION) --- */
-#loader {
+#webgl {
     position: fixed;
     top: 0;
     left: 0;
+    outline: none;
+    z-index: 1;
+}
+
+#app {
+    position: relative;
+    z-index: 2;
     width: 100%;
-    height: 100%;
-    background: var(--bg-ivory);
-    z-index: 9999;
+}
+
+section {
+    min-height: 100vh;
+    width: 100%;
     display: flex;
-    justify-content: center;
     align-items: center;
-    transition: opacity 1.5s cubic-bezier(0.165, 0.84, 0.44, 1);
-}
-
-.loader-inner {
-    text-align: center;
-}
-
-.loader-meta {
-    font-size: 0.6rem;
-    letter-spacing: 0.6em;
-    color: var(--text-dim);
-    text-transform: uppercase;
-}
-
-.loader-line {
-    width: 250px;
-    height: 1px;
-    background: var(--border-clinical);
-    margin: 25px auto;
-    position: relative;
-    overflow: hidden;
-}
-
-.loader-bar {
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: var(--primary);
-    animation: slide-load 2s infinite ease-in-out;
-}
-
-@keyframes slide-load {
-    to {
-        left: 100%;
-    }
-}
-
-/* --- HUD LAYER (FLOATING CLINICAL UI) --- */
-#ui-layer {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 100;
-    pointer-events: none;
-    padding: 2vw;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-.hud-box {
-    opacity: 0;
-    background: var(--glass-white);
-    -webkit-backdrop-filter: blur(20px);
-    backdrop-filter: blur(20px);
-    border: 1px solid var(--border-clinical);
-    padding: 1.5rem;
-    border-radius: 4px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.02);
-    transition: all 1.2s cubic-bezier(0.23, 1, 0.32, 1);
-    position: absolute;
-    min-width: 220px;
-}
-
-.top-left {
-    top: 40px;
-    left: 40px;
-}
-
-.top-right {
-    top: 40px;
-    right: 40px;
-}
-
-.bottom-left {
-    bottom: 40px;
-    left: 40px;
-}
-
-.bottom-right {
-    bottom: 40px;
-    right: 40px;
-    text-align: right;
-}
-
-.label {
-    font-size: 0.5rem;
-    letter-spacing: 0.4em;
-    color: var(--text-dim);
-    font-weight: 700;
-    text-transform: uppercase;
-    margin-bottom: 0.5rem;
-}
-
-.value {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.2rem;
-    font-style: italic;
-    color: var(--primary);
-}
-
-.value.clinical {
-    font-family: 'Inter', sans-serif;
-    font-weight: 700;
-    font-style: normal;
-    font-size: 0.8rem;
-    letter-spacing: 0.1em;
-}
-
-.watermark {
-    font-size: 0.4rem;
-    letter-spacing: 0.1em;
-    color: var(--text-dim);
-    margin-top: 1rem;
-    text-transform: uppercase;
-}
-
-/* PROGRESS ENGINE */
-.progress-track {
-    width: 180px;
-    height: 1px;
-    background: var(--border-clinical);
-    position: relative;
-    margin-left: auto;
-}
-
-.progress-fill {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    background: var(--primary);
-    width: 0%;
-}
-
-/* --- GALLERY SCROLL ENGINE (SECTION PINNING) --- */
-#canvas-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 10;
-    pointer-events: none;
-    opacity: 0;
-    /* Temporarily hidden as requested */
-}
-
-#scroll-wrapper {
-    position: relative;
-    z-index: 20;
-}
-
-.section {
-    height: var(--section-height);
-    width: 100%;
-    display: flex;
     justify-content: center;
-    align-items: center;
-    background: var(--bg-ivory);
-}
-
-.section-content {
-    max-width: 800px;
     padding: 2rem;
-    text-align: center;
-    opacity: 0;
-    transform: translateY(40px);
-}
-
-.chapter-num {
-    font-size: 0.8rem;
-    letter-spacing: 1.2em;
-    color: var(--text-dim);
-    display: block;
-    margin-bottom: 1.5rem;
-    padding-left: 1.2em;
-    /* Centers it with letters */
-}
-
-.section h2 {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(3rem, 10vw, 7rem);
-    font-weight: 300;
-    font-style: italic;
-    letter-spacing: -0.02em;
-    line-height: 1;
-    margin-bottom: 1.5rem;
-}
-
-.section p {
-    font-size: clamp(0.6rem, 2vw, 0.8rem);
-    letter-spacing: 0.8em;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    line-height: 2;
-}
-
-/* CTA WRAPPER */
-.cta-wrap {
-    margin-top: 4rem;
-}
-
-.cta-button {
-    padding: 1.5rem 4rem;
-    border: 1px solid var(--primary);
-    background: transparent;
-    color: var(--primary);
-    font-size: 0.7rem;
-    letter-spacing: 0.6em;
-    cursor: pointer;
-    pointer-events: auto;
-    transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
-    text-transform: uppercase;
-}
-
-.cta-button:hover {
-    background: var(--primary);
-    color: var(--bg-ivory);
-    transform: translateY(-5px);
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.05);
-}
-
-.legal {
-    font-size: 0.5rem;
-    letter-spacing: 0.2em;
-    color: var(--text-dim);
-    margin-top: 2rem;
-}
-
-/* --- RESPONSIVE MASTERING --- */
-@media (max-width: 768px) {
-    #ui-layer {
-        padding: 5vw;
-    }
-
-    .hud-box {
-        min-width: 150px;
-        padding: 1rem !important;
-    }
-
-    .top-left,
-    .top-right,
-    .bottom-left,
-    .bottom-right {
-        top: 20px !important;
-        bottom: 20px !important;
-        left: 20px !important;
-        right: 20px !important;
-    }
-
-    .hud-box {
-        position: fixed;
-    }
-
-    .top-right,
-    .bottom-left {
-        display: none;
-    }
-
-    /* Hide technical bits for clean Mobile */
-    .section h2 {
-        font-size: 15vw;
-    }
-
-    .chapter-num {
-        font-size: 0.6rem;
-        letter-spacing: 1em;
-    }
-
-    .progress-track {
-        width: 100px;
-    }
-}
-
-@media (max-width: 480px) {
-    .section h2 {
-        font-size: 18vw;
-    }
-
-    .section p {
-        letter-spacing: 0.4em;
-        font-size: 0.55rem;
-    }
-
-    .cta-button {
-        padding: 1rem 2rem;
-        width: 100%;
-        font-size: 0.6rem;
-    }
 }
