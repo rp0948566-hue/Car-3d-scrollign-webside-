@@ -29,10 +29,22 @@ body {
     z-index: 1;
 }
 
+h1,
+h2,
+h3,
+h4 {
+    font-family: var(--font-display);
+    font-weight: 300;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
 #app {
     position: relative;
     z-index: 2;
     width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
 section {
