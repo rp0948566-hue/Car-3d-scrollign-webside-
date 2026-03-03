@@ -18,8 +18,31 @@ const init = () => {
     console.log('--- REDEFINED | Car 3D Experience ---');
     state.initialized = true;
 
+    initPreloader();
     initCursor();
 };
+
+const initPreloader = () => {
+    const bar = document.querySelector('.preloader-bar');
+    const preloader = document.querySelector('#preloader');
+
+    // Simulate loading for now, later sync with Three.js LoadingManager
+    gsap.to(bar, {
+        width: '100%',
+        duration: 2,
+        ease: 'power2.inOut',
+        onComplete: () => {
+            gsap.to(preloader, {
+                opacity: 0,
+                duration: 1,
+                onComplete: () => {
+                    preloader.style.visibility = 'hidden';
+                }
+            });
+        }
+    });
+};
+
 
 const initCursor = () => {
     const cursor = document.querySelector('.cursor');

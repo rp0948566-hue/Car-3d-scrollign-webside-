@@ -48,6 +48,40 @@ body {
     background-image: url('data:image/svg+xml,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)"/></svg>');
 }
 
+#preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--color-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    transition: opacity 1s ease, visibility 1s;
+}
+
+.preloader-content {
+    width: 300px;
+    text-align: center;
+}
+
+.preloader-bar {
+    width: 0%;
+    height: 2px;
+    background: var(--color-accent);
+    margin-bottom: 2rem;
+    transition: width 0.4s ease;
+}
+
+.preloader-text {
+    font-size: 0.7rem;
+    letter-spacing: 0.4em;
+    opacity: 0.5;
+}
+
+
 #webgl {
     position: fixed;
     top: 0;
